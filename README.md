@@ -61,7 +61,7 @@ pnpm add modern-jalali-datepicker
 import DatePicker from "modern-jalali-datepicker";
 import "modern-jalali-datepicker/style.css";
 
-const picker = new DatePicker("#datepicker");
+const picker = new DatePicker({element:"#datepicker"});
 ```
 
 This creates a basic Jalali date picker using the default configuration.
@@ -682,7 +682,7 @@ After calling this method, the date picker will no longer function.
 Triggered when a date is selected.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({element:"#datepicker",
     onSelect(date){
         console.log(date);
     }
@@ -694,7 +694,7 @@ const picker = new DatePicker("#datepicker",{
 Opens the date picker popup.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({element:"#datepicker",
     onOpen(){
         console.log(" date picker opened");
     }
@@ -706,7 +706,7 @@ const picker = new DatePicker("#datepicker",{
 Closes the date picker popup.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({element:"#datepicker",
     onClose(){
         console.log(" date picker closed");
     }
