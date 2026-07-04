@@ -43,13 +43,13 @@
 
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/modern-jalali-datepicker.git"
+    "url": "https://github.com/mohammadhossein-motamedi/modern-jalali-datepicker.git"
   },
 
-  "homepage": "https://github.com/YOUR_USERNAME/modern-jalali-datepicker",
+  "homepage": "https://github.com/mohammadhossein-motamedi/modern-jalali-datepicker",
 
   "bugs": {
-    "url": "https://github.com/YOUR_USERNAME/modern-jalali-datepicker/issues"
+    "url": "https://github.com/mohammadhossein-motamedi/modern-jalali-datepicker/issues"
   },
 
   "dependencies": {
