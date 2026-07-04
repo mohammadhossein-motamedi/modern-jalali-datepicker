@@ -1,0 +1,619 @@
+/* =========================================================
+   LIGHT THEME
+========================================================= */
+
+.pdp-light {
+    --pdp-primary: #2563eb;
+
+    --pdp-bg: #ffffff;
+    --pdp-text: #222222;
+    --pdp-border: #eeeeee;
+
+    --pdp-hover: #dbeafe;
+    --pdp-hover-text: #222222;
+
+    --pdp-shadow: 0 10px 30px rgba(0, 0, 0, .15);
+
+    --pdp-header-bg: #2563eb;
+    --pdp-header-text: #ffffff;
+
+    --pdp-surface: #f5f5f5;
+    --pdp-surface-hover: #e5e7eb;
+
+    --pdp-tooltip-bg: #222222;
+    --pdp-tooltip-text: #ffffff;
+
+    --pdp-btn-today: #60a5fa;
+    --pdp-btn-clear: #36e026;
+    --pdp-btn-close: #e53935;
+}
+
+
+/* =========================================================
+   DARK THEME
+========================================================= */
+
+.pdp-dark {
+    --pdp-primary: #60a5fa;
+
+    --pdp-bg: #1f2937;
+    --pdp-text: #f9fafb;
+    --pdp-border: #374151;
+
+    --pdp-hover: #374151;
+    --pdp-hover-text: #ffffff;
+
+    --pdp-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+
+    --pdp-header-bg: #111827;
+    --pdp-header-text: #ffffff;
+
+    --pdp-surface: #374151;
+    --pdp-surface-hover: #4b5563;
+
+    --pdp-tooltip-bg: #000000;
+    --pdp-tooltip-text: #ffffff;
+
+    --pdp-btn-today: #60a5fa;
+    --pdp-btn-clear: #36e026;
+    --pdp-btn-close: #e53935;
+}
+
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CALENDAR CONTAINER
+========================================================= */
+
+.pdp {
+    width: 300px;
+    display: none;
+    position: absolute;
+    z-index: 9999;
+
+    overflow: hidden;
+    direction: rtl;
+    background: var(--pdp-bg);
+
+    border-radius: 12px;
+    box-shadow: var(--pdp-shadow);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.pdp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    height: 45px;
+    padding: 6px;
+
+    background: var(--pdp-header-bg);
+    color: var(--pdp-header-text);
+
+    font-weight: bold;
+
+    border-bottom: 1px solid var(--pdp-border);
+}
+
+.pdp-title {
+    display: flex;
+    gap: 8px;
+}
+
+.pdp-month,
+.pdp-year,
+.pdp-nav {
+    padding: 8px 12px;
+
+    background: none;
+    border: none;
+    border-radius: 8px;
+
+    color: var(--pdp-header-text);
+
+    font-size: 13px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: .3s;
+}
+
+.pdp-month:hover,
+.pdp-year:hover,
+.pdp-nav:hover {
+    background: var(--pdp-surface-hover);
+}
+
+
+/* =========================================================
+   DAYS GRID
+========================================================= */
+
+.pdp-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+
+    gap: 0;
+    padding: 10px;
+}
+
+.pdp-weekday {
+    padding-bottom: 4px;
+
+    text-align: center;
+
+    font-weight: bold;
+    color: #888;
+}
+
+.pdp-day {
+    position: relative;
+
+    height: 30px;
+
+    padding-inline: 3px;
+    margin-bottom: 1px;
+
+    background: var(--pdp-bg);
+
+    color: var(--pdp-text);
+
+    border: none;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition: .3s;
+}
+
+.hover:hover {
+    background: var(--pdp-hover);
+}
+
+.empty {
+    background: transparent;
+    color: transparent;
+    cursor: default;
+}
+
+
+/* =========================================================
+   STATES
+========================================================= */
+
+.selected {
+    background: var(--pdp-primary);
+    color: #ffffff;
+}
+
+.today {
+    border: 2px solid var(--pdp-primary);
+    border-radius: 8px;
+}
+
+.today.selected {
+    background: var(--pdp-primary);
+    color: #ffffff;
+}
+
+.pdp-day.disabled {
+    opacity: .35;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.holiday {
+    color: red;
+}
+
+.in-range {
+    background: var(--pdp-primary);
+    color: #dbeafe;
+    border-radius: 0;
+}
+
+.selected-start {
+    background: var(--pdp-primary);
+    border-radius: 0 40% 40% 0;
+}
+
+.selected-end {
+    background: var(--pdp-primary);
+    border-radius: 40% 0 0 40%;
+}
+/* =========================================================
+   MONTH SELECTOR
+========================================================= */
+
+.pdp-months {
+    margin-top: 4px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.pdp-month-item {
+    padding: 12px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: var(--pdp-surface);
+    color: var(--pdp-text);
+
+    font-size: 13px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: .2s;
+}
+
+.pdp-month-item:hover {
+    background: var(--pdp-surface-hover);
+    color: #ffffff;
+}
+
+.pdp-month-item.active {
+    background: var(--pdp-primary);
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   YEAR SELECTOR
+========================================================= */
+
+.pdp-years-wrapper {
+    margin-top: 4px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.pdp-years {
+    flex: 1;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.pdp-year-item {
+    padding: 12px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: var(--pdp-surface);
+    color: var(--pdp-text);
+
+    cursor: pointer;
+    transition: .2s;
+}
+
+.pdp-year-item:hover {
+    background: var(--pdp-surface-hover);
+    color: #ffffff;
+}
+
+.pdp-year-item.active {
+    background: var(--pdp-primary);
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   YEAR NAVIGATION
+========================================================= */
+
+.pdp-years-prev,
+.pdp-years-next {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: var(--pdp-surface);
+    color: var(--pdp-text);
+
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: .2s;
+}
+
+.pdp-years-prev:hover,
+.pdp-years-next:hover {
+    background: var(--pdp-surface-hover);
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.pdp-footer {
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+
+    padding: 10px;
+
+    border-top: 1px solid var(--pdp-border);
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.pdp-btn {
+    padding: 6px 14px;
+
+    border: none;
+    border-radius: 6px;
+
+    color: #ffffff;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.pdp-btn-today {
+    background: var(--pdp-btn-today);
+}
+
+.pdp-btn-clear {
+    background: var(--pdp-btn-clear);
+}
+
+.pdp-btn-close {
+    background: var(--pdp-btn-close);
+}
+
+
+/* =========================================================
+   MULTIPLE DATE INFO
+========================================================= */
+
+.pdp-multiple-info {
+    color: var(--pdp-btn-clear);
+
+    font-size: 12px;
+    font-weight: bold;
+}
+/* =========================================================
+   TIME PICKER
+========================================================= */
+
+.pdp-time-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    padding: 5px;
+}
+
+.pdp-time {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    padding-top: 4px;
+
+    border-top: 1px solid var(--pdp-border);
+}
+
+
+/* =========================================================
+   TIME SPINNER
+========================================================= */
+
+.pdp-time-spinner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.pdp-time-spinner button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 22px;
+    height: 18px;
+
+    margin: 0;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    color: #666;
+
+    cursor: pointer;
+    line-height: 1;
+    transition: transform .15s;
+}
+
+.pdp-time-spinner button:active {
+    transform: scale(1.3);
+}
+
+.pdp-time-spinner button svg {
+    color: var(--pdp-text);
+}
+
+
+/* =========================================================
+   TIME INPUT
+========================================================= */
+
+.pdp-time-spinner input {
+    width: 42px;
+    height: 32px;
+
+    margin: 2px 0;
+    padding: 0;
+
+    appearance: textfield;
+    -moz-appearance: textfield;
+
+    border: 1px solid var(--pdp-border);
+    border-radius: 8px;
+
+    background: var(--pdp-bg);
+    color: var(--pdp-text);
+
+    text-align: center;
+
+    outline: none;
+    box-shadow: none;
+}
+
+.pdp-time-spinner input:hover {
+    border-color: var(--pdp-primary);
+}
+
+.pdp-time-spinner input:focus {
+    border-color: var(--pdp-primary);
+    outline: none;
+    box-shadow: none;
+}
+
+.pdp-time-spinner input::-webkit-inner-spin-button,
+.pdp-time-spinner input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+/* =========================================================
+   TIME MESSAGES
+========================================================= */
+
+.pdp-time-messages {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.pdp-time-info {
+    margin-top: 4px;
+
+    color: var(--pdp-btn-clear);
+
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.pdp-time-info::after {
+    content: "|";
+    margin: 0 5px;
+    color: #999;
+}
+
+.pdp-time-error {
+    width: fit-content;
+
+    margin-top: 6px;
+
+    color: #e53935;
+
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   EVENT MARKERS
+========================================================= */
+
+.pdp-black-heart,
+.pdp-event-marker {
+    position: absolute;
+
+    top: 2px;
+    right: 2px;
+
+    font-size: 11px;
+    line-height: 1;
+
+    pointer-events: none;
+}
+
+.pdp-black-heart {
+    filter: drop-shadow(0 0 2px #fff);
+}
+
+
+/* =========================================================
+   TOOLTIP
+========================================================= */
+.tolltip
+{
+    display: none;
+    position: absolute;
+    top: -32px;
+    left:50%;
+    transform:translateX(-50%);
+    width: 400%;
+    padding: 5px 8px;
+    z-index: 999;
+}
+.pdp-event-tooltip {
+    
+
+    box-sizing: border-box;
+    background: var(--pdp-tooltip-bg);
+    color: var(--pdp-tooltip-text);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+
+    white-space: normal;
+    word-break: break-word;
+}
+.pdp-event-tooltip.tooltip-left{
+    left:auto;
+    right: 0;
+    transform:none;
+}
+.pdp-event-tooltip.tooltip-right{
+    right:auto;
+    left:0;
+    transform:none;
+}
+
+
+.pdp-day:hover .pdp-event-tooltip {
+    display: block;
+}
+/* end */
+
