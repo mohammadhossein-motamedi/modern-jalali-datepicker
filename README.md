@@ -71,7 +71,8 @@ This creates a basic Jalali date picker using the default configuration.
 The date picker accepts an optional configuration object.
 
 ```javascript
-const picker = new DatePicker("#datepicker", {
+const picker = new DatePicker(
+    {element:"#datepicker", 
     // options
 });
 
@@ -82,7 +83,8 @@ const picker = new DatePicker("#datepicker", {
 Customize how dates are displayed in the input and returned by methods.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     format:"YYYY/MM/DD"
 });
 ```
@@ -188,7 +190,8 @@ Output
 Enable date range selection.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     range:true
 });
 ```
@@ -198,7 +201,8 @@ const picker = new DatePicker("#datepicker",{
 Select multiple dates.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     multiple:5
 });
 ```
@@ -207,7 +211,8 @@ const picker = new DatePicker("#datepicker",{
 Enable the time picker.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     time:true
 });
 ```
@@ -216,7 +221,8 @@ const picker = new DatePicker("#datepicker",{
 Display time in **12-hour** or **24-hour** format.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     time:true,
     hourFormat:12
 });
@@ -234,7 +240,8 @@ Available values:
 Show or hide the seconds selector.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     time:true,
     showSeconds:false
 });
@@ -247,7 +254,8 @@ const picker = new DatePicker("#datepicker",{
 Increase or decrease hours by a custom step.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     time:true,
     hourStep:2
 });
@@ -260,7 +268,8 @@ const picker = new DatePicker("#datepicker",{
 Increase or decrease minutes by a custom step.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     time:true,
     minuteStep:5
 });
@@ -273,7 +282,8 @@ const picker = new DatePicker("#datepicker",{
 Increase or decrease seconds by a custom step.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     time:true,
     secondStep:10
 });
@@ -283,7 +293,8 @@ const picker = new DatePicker("#datepicker",{
 Prevent users from selecting dates before a specific date.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     minDate:"1405/01/01"
 });
 ```
@@ -295,7 +306,8 @@ const picker = new DatePicker("#datepicker",{
 Prevent users from selecting dates after a specific date.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     maxDate:"1405/12/29"
 });
 ```
@@ -307,7 +319,8 @@ const picker = new DatePicker("#datepicker",{
 Set the initial selected date.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     defaultDate:"1405/04/15"
 });
 ```
@@ -319,7 +332,8 @@ const picker = new DatePicker("#datepicker",{
 Prevent selecting a time earlier than the specified value.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     time:true,
     minTime:"09:30"
 });
@@ -332,7 +346,8 @@ const picker = new DatePicker("#datepicker",{
 Prevent selecting a time later than the specified value.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     time:true,
     maxTime:"18:00"
 });
@@ -345,7 +360,8 @@ const picker = new DatePicker("#datepicker",{
 Disable specific dates.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element: "#datepicker",
     disabledDates:[
         "1405/01/10",
         "1405/01/15",
@@ -357,7 +373,8 @@ const picker = new DatePicker("#datepicker",{
 Or disable dates dynamically using a callback:
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     disabledDates(date){
 
         return date.weekDay===6;
@@ -372,7 +389,8 @@ const picker = new DatePicker("#datepicker",{
 Apply custom CSS classes to specific days.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element: "#datepicker",
     dayClassName(date){
 
         if(date.week.day===6) return "holiday";
@@ -390,7 +408,8 @@ const picker = new DatePicker("#datepicker",{
 Customize footer buttons.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     footer:{
         today:true,    //default true
         clear:true,     //default true
@@ -402,7 +421,8 @@ const picker = new DatePicker("#datepicker",{
 Disable a button:
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element: "#datepicker",
     footer:{
         clear:false
     }
@@ -416,7 +436,8 @@ const picker = new DatePicker("#datepicker",{
 Override the default CSS classes.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element :"#datepicker",
     classes:{
         selected: "selected",
         today: "today",
@@ -448,7 +469,8 @@ const picker = new DatePicker("#datepicker",{
 Display custom events on specific dates.
 
 ```javascript
-const picker = new DatePicker("#datepicker",{
+const picker = new DatePicker({
+    element:"#datepicker",
     events:{
         "1405-04-15":{
             type:"meeting",
