@@ -178,7 +178,7 @@ export default class DatePicker
 
         }
           
-        if (this.state.showTime && this.state.view === "days") 
+        if (this.state.view === "days") 
         {
             body.appendChild(
                 TimeView(this.state,
@@ -329,6 +329,7 @@ export default class DatePicker
             }
 
             this.input.value = this.state.selectedDates.map(date => this.formatter.formatDate(date, this.state)).join(" , ");
+            this.triggerSelect()
 
            this.render()
             return;
@@ -344,27 +345,25 @@ export default class DatePicker
                 minute: this.state.minute,
                 second: this.state.second
             };
-
             if (this.state.timeError) return;
-            if (typeof this.options.onSelect === "function") this.options.onSelect(this.getDate());
-            
-
+            this.triggerSelect();
+                
             this.state.currentYear = day.year;
             this.state.currentMonth = day.month;
 
             this.input.value = this.formatter.formatDate(this.state.selectedDate , this.state);          
 
             this.render();
-
             this.close();
             return;
 
         }
 
 
-        // حالت Range (فعلاً فقط تست)
+        // حالت Range 
 
-        if (!this.state.rangeStart) {
+        if (!this.state.rangeStart) 
+        {
 
             this.state.rangeStart = {
                 ...day,
@@ -374,9 +373,9 @@ export default class DatePicker
             };
 
            this.input.value = this.formatter.formatDate(this.state.rangeStart, this.state);
-
-            this.render();
-            return;
+           this.triggerSelect();
+           this.render();
+           return;
 
 
 
@@ -402,6 +401,7 @@ export default class DatePicker
                 this.formatter.formatDate(this.state.rangeStart, this.state) +
                 " - " +
                 this.formatter.formatDate(this.state.rangeEnd , this.state);
+            this.triggerSelect();
             this.render(); 
             return;
 
@@ -420,6 +420,12 @@ export default class DatePicker
 
         
 
+    }
+
+  
+    triggerSelect()
+    {
+        if (typeof this.options.onSelect === "function") this.options.onSelect(this.getDate());
     }
 
     showMonths()
@@ -519,6 +525,7 @@ export default class DatePicker
     }
     getDate()
     {
+        
         // Range
         if (this.state.isRange) 
         {
@@ -533,9 +540,11 @@ export default class DatePicker
             };
 
         }
+        
         // Multiple
         if (this.state.multiple > 0)
         {
+            
             return this.state.selectedDates.map(date =>
                 this.formatter.formatDate(date, this.state, true)
             );

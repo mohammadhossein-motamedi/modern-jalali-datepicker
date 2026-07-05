@@ -620,7 +620,7 @@ var I = class {
 	}
 	render() {
 		let t = document.createElement("div");
-		t.className = this.state.classes.body, this.state.view === "days" && t.appendChild(S(this.state, { select: (e) => this.selectDate(e) })), this.state.showTime && this.state.view === "days" && t.appendChild(j(this.state, { change: () => this.changeTime() }, this.options)), this.state.view === "months" && t.appendChild(E(this.state, { selectMonth: (e) => this.selectMonth(e) })), this.state.view === "years" && t.appendChild(D(this.state, {
+		t.className = this.state.classes.body, this.state.view === "days" && t.appendChild(S(this.state, { select: (e) => this.selectDate(e) })), this.state.view === "days" && t.appendChild(j(this.state, { change: () => this.changeTime() }, this.options)), this.state.view === "months" && t.appendChild(E(this.state, { selectMonth: (e) => this.selectMonth(e) })), this.state.view === "years" && t.appendChild(D(this.state, {
 			selectYear: (e) => this.selectYear(e),
 			prevYears: () => this.prevYears(),
 			nextYears: () => this.nextYears()
@@ -661,7 +661,7 @@ var I = class {
 					second: this.state.second
 				});
 			}
-			this.input.value = this.state.selectedDates.map((e) => this.formatter.formatDate(e, this.state)).join(" , "), this.render();
+			this.input.value = this.state.selectedDates.map((e) => this.formatter.formatDate(e, this.state)).join(" , "), this.triggerSelect(), this.render();
 			return;
 		}
 		if (!this.state.isRange) {
@@ -671,7 +671,7 @@ var I = class {
 				minute: this.state.minute,
 				second: this.state.second
 			}, this.state.timeError) return;
-			typeof this.options.onSelect == "function" && this.options.onSelect(this.getDate()), this.state.currentYear = e.year, this.state.currentMonth = e.month, this.input.value = this.formatter.formatDate(this.state.selectedDate, this.state), this.render(), this.close();
+			this.triggerSelect(), this.state.currentYear = e.year, this.state.currentMonth = e.month, this.input.value = this.formatter.formatDate(this.state.selectedDate, this.state), this.render(), this.close();
 			return;
 		}
 		if (!this.state.rangeStart) {
@@ -680,7 +680,7 @@ var I = class {
 				hour: this.state.hour,
 				minute: this.state.minute,
 				second: this.state.second
-			}, this.input.value = this.formatter.formatDate(this.state.rangeStart, this.state), this.render();
+			}, this.input.value = this.formatter.formatDate(this.state.rangeStart, this.state), this.triggerSelect(), this.render();
 			return;
 		} else if (this.state.rangeEnd) this.state.rangeStart = e, this.state.rangeEnd = null, this.render();
 		else {
@@ -693,10 +693,13 @@ var I = class {
 				let e = this.state.rangeStart;
 				this.state.rangeStart = this.state.rangeEnd, this.state.rangeEnd = e;
 			}
-			this.input.value = this.formatter.formatDate(this.state.rangeStart, this.state) + " - " + this.formatter.formatDate(this.state.rangeEnd, this.state), this.render();
+			this.input.value = this.formatter.formatDate(this.state.rangeStart, this.state) + " - " + this.formatter.formatDate(this.state.rangeEnd, this.state), this.triggerSelect(), this.render();
 			return;
 		}
 		this.render();
+	}
+	triggerSelect() {
+		typeof this.options.onSelect == "function" && this.options.onSelect(this.getDate());
 	}
 	showMonths() {
 		this.state.view = "months", this.render();
