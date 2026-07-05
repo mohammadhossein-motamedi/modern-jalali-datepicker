@@ -484,10 +484,10 @@ export default class DatePicker
         this.validateTime();
         const rect=this.input.getBoundingClientRect();
     
-        this.container.style.right  =`7%`;
-
+      
         this.container.style.top =rect.bottom + window.scrollY + 8 + "px";
-
+        this.container.style.right = `${window.innerWidth - rect.right}px`;
+        this.container.style.left = "auto";
         
         this.container.style.display="block";
 

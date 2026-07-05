@@ -722,7 +722,7 @@ var I = class {
 	open() {
 		this.applyTheme(), this.validateTime();
 		let e = this.input.getBoundingClientRect();
-		this.container.style.right = "7%", this.container.style.top = e.bottom + window.scrollY + 8 + "px", this.container.style.display = "block", typeof this.options.onOpen == "function" && this.options.onOpen(), this.render();
+		this.container.style.top = e.bottom + window.scrollY + 8 + "px", this.container.style.right = `${window.innerWidth - e.right}px`, this.container.style.left = "auto", this.container.style.display = "block", typeof this.options.onOpen == "function" && this.options.onOpen(), this.render();
 	}
 	close() {
 		this.container.style.display = "none", typeof this.options.onClose == "function" && this.options.onClose();
