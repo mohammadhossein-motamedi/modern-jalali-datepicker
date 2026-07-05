@@ -671,7 +671,7 @@ var I = class {
 				minute: this.state.minute,
 				second: this.state.second
 			}, this.state.timeError) return;
-			typeof this.options.onSelect == "function" && this.options.onSelect(this.formatter.formatDate(this.state.selectedDate, this.state)), this.state.currentYear = e.year, this.state.currentMonth = e.month, this.input.value = this.formatter.formatDate(this.state.selectedDate, this.state), this.render(), this.close();
+			typeof this.options.onSelect == "function" && this.options.onSelect(this.getDate()), this.state.currentYear = e.year, this.state.currentMonth = e.month, this.input.value = this.formatter.formatDate(this.state.selectedDate, this.state), this.render(), this.close();
 			return;
 		}
 		if (!this.state.rangeStart) {

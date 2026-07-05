@@ -346,13 +346,8 @@ export default class DatePicker
             };
 
             if (this.state.timeError) return;
-            if (typeof this.options.onSelect === "function") 
-            {
-                this.options.onSelect(
-                    this.formatter.formatDate(this.state.selectedDate , this.state)
-                );
-
-            }
+            if (typeof this.options.onSelect === "function") this.options.onSelect(this.getDate());
+            
 
             this.state.currentYear = day.year;
             this.state.currentMonth = day.month;

@@ -393,9 +393,9 @@ const picker = new DatePicker({
     element: "#datepicker",
     dayClassName(date){
 
-        if(date.week.day===6) return "holiday";
+        if(date.weekDay===6) return "holiday";
 
-        if(date.day===1) return "first-day";
+        if(date.weekDay===1) return "first-day";
 
     }
 });
