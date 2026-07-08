@@ -83,57 +83,70 @@ export default class Formatter {
 
     parseDate(value) 
     {
-        if (typeof value !== "string") return null;
-        const tokens = this.getTokens();
-        const values = value.match(/[A-Za-z]+|\d+/g) ?? [];
-       
+         if (typeof value !== "string") return null;
 
-        const result = {};
+    const tokenPatterns = {
+        YYYY: "(\\d{4})",
+        YY: "(\\d{2})",
+        MM: "(\\d{2})",
+        M: "(\\d{1,2})",
+        DD: "(\\d{2})",
+        D: "(\\d{1,2})",
+        HH: "(\\d{2})",
+        H: "(\\d{1,2})",
+        hh: "(\\d{2})",
+        h: "(\\d{1,2})",
+        mm: "(\\d{2})",
+        m: "(\\d{1,2})",
+        ss: "(\\d{2})",
+        s: "(\\d{1,2})",
+        A: "(AM|PM)",
+        a: "(am|pm)"
+    };
 
-        tokens.forEach((token, index) => {
+    const tokens = [];
 
-            result[token] = values[index];
-
-        });
-
-        let hour = Number(
-            result.HH ??
-            result.H ??
-            result.hh ??
-            result.h ??
-            0
-        );
-
-        const meridiem = result.A ?? result.a;
-
-        if (meridiem?.toUpperCase() === "PM" && hour < 12) {
-            hour += 12;
+    const regexString = "^" + this.format.replace(
+        /YYYY|YY|MM|M|DD|D|HH|H|hh|h|mm|m|ss|s|A|a/g,
+        token => {
+            tokens.push(token);
+            return tokenPatterns[token];
         }
+    ) + "$";
 
-        if (meridiem?.toUpperCase() === "AM" && hour === 12) {
-            hour = 0;
-        }
+ const match = value.match(new RegExp(regexString));
 
-        const year = result.YYYY
-            ? Number(result.YYYY)
-            : Number(result.YY);
+    if (!match) return null;
 
-        
+    const result = {};
 
-        const date = {
-            year,
-            month: Number(result.MM ?? result.M) - 1,
-            day: Number(result.DD ?? result.D),
-            hour,
-            minute: Number(result.mm ?? result.m ?? 0),
-            second: Number(result.ss ?? result.s ?? 0)
+    tokens.forEach((token, index) => {
+        result[token] = match[index + 1];
+    });
 
-        };
+    let hour = Number(
+        result.HH ??
+        result.H ??
+        result.hh ??
+        result.h ??
+        0
+    );
 
-        // validate
-        if (!this.isValidDate(date)) return null;
+    const meridiem = result.A ?? result.a;
 
-        return date;
+    if (meridiem?.toUpperCase() === "PM" && hour < 12) hour += 12;
+    if (meridiem?.toUpperCase() === "AM" && hour === 12) hour = 0;
+
+    const date = {
+        year: Number(result.YYYY ?? ("20" + result.YY)),
+        month: Number(result.MM ?? result.M) - 1,
+        day: Number(result.DD ?? result.D),
+        hour,
+        minute: Number(result.mm ?? result.m ?? 0),
+        second: Number(result.ss ?? result.s ?? 0)
+    };
+
+    return this.isValidDate(date) ? date : null;
     }
 
    getTokens() 

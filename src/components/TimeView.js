@@ -151,13 +151,15 @@ export default function TimeView(state, events, options) {
         document.addEventListener("mouseup", stopDecrease);
         down.addEventListener("mouseleave", stopDecrease);
 
-        
-        wrapper.onwheel = (e) => 
-        {
+        const wheelHandler = (e) => {
             e.preventDefault();
 
-            (e.deltaY < 0) ?  increase() : decrease();
+             (e.deltaY < 0) ?  increase() : decrease();
         };
+
+        wrapper.addEventListener("wheel", wheelHandler, {
+            passive: false
+        });
 
 
         

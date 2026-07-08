@@ -385,21 +385,40 @@ var O = class {
 	}
 	parseDate(e) {
 		if (typeof e != "string") return null;
-		let t = this.getTokens(), n = e.match(/[A-Za-z]+|\d+/g) ?? [], r = {};
-		t.forEach((e, t) => {
-			r[e] = n[t];
+		let t = {
+			YYYY: "(\\d{4})",
+			YY: "(\\d{2})",
+			MM: "(\\d{2})",
+			M: "(\\d{1,2})",
+			DD: "(\\d{2})",
+			D: "(\\d{1,2})",
+			HH: "(\\d{2})",
+			H: "(\\d{1,2})",
+			hh: "(\\d{2})",
+			h: "(\\d{1,2})",
+			mm: "(\\d{2})",
+			m: "(\\d{1,2})",
+			ss: "(\\d{2})",
+			s: "(\\d{1,2})",
+			A: "(AM|PM)",
+			a: "(am|pm)"
+		}, n = [], r = "^" + this.format.replace(/YYYY|YY|MM|M|DD|D|HH|H|hh|h|mm|m|ss|s|A|a/g, (e) => (n.push(e), t[e])) + "$", i = e.match(new RegExp(r));
+		if (!i) return null;
+		let a = {};
+		n.forEach((e, t) => {
+			a[e] = i[t + 1];
 		});
-		let i = Number(r.HH ?? r.H ?? r.hh ?? r.h ?? 0), a = r.A ?? r.a;
-		a?.toUpperCase() === "PM" && i < 12 && (i += 12), a?.toUpperCase() === "AM" && i === 12 && (i = 0);
-		let o = {
-			year: r.YYYY ? Number(r.YYYY) : Number(r.YY),
-			month: Number(r.MM ?? r.M) - 1,
-			day: Number(r.DD ?? r.D),
-			hour: i,
-			minute: Number(r.mm ?? r.m ?? 0),
-			second: Number(r.ss ?? r.s ?? 0)
+		let o = Number(a.HH ?? a.H ?? a.hh ?? a.h ?? 0), s = a.A ?? a.a;
+		s?.toUpperCase() === "PM" && o < 12 && (o += 12), s?.toUpperCase() === "AM" && o === 12 && (o = 0);
+		let c = {
+			year: Number(a.YYYY ?? "20" + a.YY),
+			month: Number(a.MM ?? a.M) - 1,
+			day: Number(a.DD ?? a.D),
+			hour: o,
+			minute: Number(a.mm ?? a.m ?? 0),
+			second: Number(a.ss ?? a.s ?? 0)
 		};
-		return this.isValidDate(o) ? o : null;
+		return this.isValidDate(c) ? c : null;
 	}
 	getTokens() {
 		return this.format.match(/YYYY|YY|MM|M|DD|D|HH|H|hh|h|mm|m|ss|s|A|a/g);
@@ -497,9 +516,9 @@ function j(e, t, n) {
 		function _() {
 			clearTimeout(p), clearInterval(f), p = null, f = null;
 		}
-		return l.addEventListener("mousedown", g), document.addEventListener("mouseup", _), l.addEventListener("mouseleave", _), o.onwheel = (e) => {
+		return l.addEventListener("mousedown", g), document.addEventListener("mouseup", _), l.addEventListener("mouseleave", _), o.addEventListener("wheel", (e) => {
 			e.preventDefault(), e.deltaY < 0 ? u() : d();
-		}, o.append(s), o.append(c), o.append(l), o;
+		}, { passive: !1 }), o.append(s), o.append(c), o.append(l), o;
 	}
 	let o = a(e.hour, e.hourFormat === 24 ? 0 : 1, e.hourFormat === 24 ? 23 : 12, n.hourStep ?? 1, (t) => e.hour = t), s = a(e.minute, 0, 59, n.minuteStep ?? 1, (t) => e.minute = t);
 	i.append(o);
@@ -555,8 +574,15 @@ function M(e, t) {
 }
 function N(e, t) {
 	if (typeof e != "string") return null;
-	let n = t.parseDate(e);
-	return Number.isNaN(n.year) || Number.isNaN(n.month) || Number.isNaN(n.day) ? (console.warn(`[PersianDatePicker] Invalid date "${e}".`), null) : n;
+	let [n, r, i] = e.split(/[\/-]/).map(Number);
+	return !Number.isInteger(n) || !Number.isInteger(r) || !Number.isInteger(i) ? (console.warn(`[PersianDatePicker] Invalid date "${e}".`), null) : {
+		year: n,
+		month: r - 1,
+		day: i,
+		hour: 0,
+		minute: 0,
+		second: 0
+	};
 }
 function P(e) {
 	if (typeof e != "string") return null;

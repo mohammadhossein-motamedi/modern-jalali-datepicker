@@ -132,25 +132,28 @@ export default function createState(options, formatter)
 function parseOptionDate(value, formatter) 
 {
 
-    if (typeof value !== "string") {
-        return null;
-    }
+    if (typeof value !== "string")  return null;
+    
 
-    const date = formatter.parseDate(value);
+   const [year, month, day] = value.split(/[\/-]/).map(Number);
 
     if (
-        Number.isNaN(date.year) ||
-        Number.isNaN(date.month) ||
-        Number.isNaN(date.day)
+        !Number.isInteger(year) ||
+        !Number.isInteger(month) ||
+        !Number.isInteger(day)
     ) {
-        console.warn(
-            `[PersianDatePicker] Invalid date "${value}".`
-        );
-
+        console.warn(`[PersianDatePicker] Invalid date "${value}".`);
         return null;
     }
 
-    return date;
+    return {
+        year,
+        month: month - 1,
+        day,
+        hour: 0,
+        minute: 0,
+        second: 0
+    };
 }
 
 
