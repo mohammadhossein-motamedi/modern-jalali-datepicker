@@ -383,46 +383,6 @@ var O = class {
 			l = l.replaceAll(e, c[e]);
 		}), l;
 	}
-	parseDate(e) {
-		if (typeof e != "string") return null;
-		let t = {
-			YYYY: "(\\d{4})",
-			YY: "(\\d{2})",
-			MM: "(\\d{2})",
-			M: "(\\d{1,2})",
-			DD: "(\\d{2})",
-			D: "(\\d{1,2})",
-			HH: "(\\d{2})",
-			H: "(\\d{1,2})",
-			hh: "(\\d{2})",
-			h: "(\\d{1,2})",
-			mm: "(\\d{2})",
-			m: "(\\d{1,2})",
-			ss: "(\\d{2})",
-			s: "(\\d{1,2})",
-			A: "(AM|PM)",
-			a: "(am|pm)"
-		}, n = [], r = "^" + this.format.replace(/YYYY|YY|MM|M|DD|D|HH|H|hh|h|mm|m|ss|s|A|a/g, (e) => (n.push(e), t[e])) + "$", i = e.match(new RegExp(r));
-		if (!i) return null;
-		let a = {};
-		n.forEach((e, t) => {
-			a[e] = i[t + 1];
-		});
-		let o = Number(a.HH ?? a.H ?? a.hh ?? a.h ?? 0), s = a.A ?? a.a;
-		s?.toUpperCase() === "PM" && o < 12 && (o += 12), s?.toUpperCase() === "AM" && o === 12 && (o = 0);
-		let c = {
-			year: Number(a.YYYY ?? "20" + a.YY),
-			month: Number(a.MM ?? a.M) - 1,
-			day: Number(a.DD ?? a.D),
-			hour: o,
-			minute: Number(a.mm ?? a.m ?? 0),
-			second: Number(a.ss ?? a.s ?? 0)
-		};
-		return this.isValidDate(c) ? c : null;
-	}
-	getTokens() {
-		return this.format.match(/YYYY|YY|MM|M|DD|D|HH|H|hh|h|mm|m|ss|s|A|a/g);
-	}
 	isValidDate(e) {
 		return !(!e || !Number.isFinite(e.year) || !Number.isFinite(e.month) || !Number.isFinite(e.day) || e.month < 0 || e.month > 11 || e.day < 1 || e.day > 31 || e.hour < 0 || e.hour > 23 || e.minute < 0 || e.minute > 59 || e.second < 0 || e.second > 59);
 	}
@@ -448,6 +408,23 @@ var O = class {
 			"a"
 		];
 		return t.every((e) => n.includes(e));
+	}
+	parseInputDate(e) {
+		if (typeof e != "string") return null;
+		e = e.trim();
+		let t = 0, n = 0, r = 0, i = e.match(/(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?/);
+		i && (t = Number(i[1]), n = Number(i[2]), r = Number(i[3] ?? 0), e = e.replace(i[0], "").trim());
+		let a = e.match(/^(\d{4})[\/.-](\d{1,2})[\/.-](\d{1,2})$/);
+		if (!a) return null;
+		let o = {
+			year: Number(a[1]),
+			month: Number(a[2]) - 1,
+			day: Number(a[3]),
+			hour: t,
+			minute: n,
+			second: r
+		};
+		return this.isValidDate(o) ? o : null;
 	}
 };
 //#endregion
@@ -520,40 +497,42 @@ function j(e, t, n) {
 			e.preventDefault(), e.deltaY < 0 ? u() : d();
 		}, { passive: !1 }), o.append(s), o.append(c), o.append(l), o;
 	}
-	let o = a(e.hour, e.hourFormat === 24 ? 0 : 1, e.hourFormat === 24 ? 23 : 12, n.hourStep ?? 1, (t) => e.hour = t), s = a(e.minute, 0, 59, n.minuteStep ?? 1, (t) => e.minute = t);
-	i.append(o);
-	let c = document.createElement("span");
-	if (c.textContent = ":", i.append(c), i.append(s), e.showSeconds) {
-		let t = document.createElement("span");
-		t.textContent = ":", i.append(t);
-		let r = a(e.second, 0, 59, n.secondStep ?? 1, (t) => e.second = t);
-		i.append(r);
+	if (e.showTime) {
+		let o = a(e.hour, e.hourFormat === 24 ? 0 : 1, e.hourFormat === 24 ? 23 : 12, n.hourStep ?? 1, (t) => e.hour = t), s = a(e.minute, 0, 59, n.minuteStep ?? 1, (t) => e.minute = t);
+		i.append(o);
+		let c = document.createElement("span");
+		if (c.textContent = ":", i.append(c), i.append(s), e.showSeconds) {
+			let t = document.createElement("span");
+			t.textContent = ":", i.append(t);
+			let r = a(e.second, 0, 59, n.secondStep ?? 1, (t) => e.second = t);
+			i.append(r);
+		}
+		if (e.hourFormat === 12) {
+			let n = document.createElement("select");
+			["AM", "PM"].forEach((e) => {
+				let t = document.createElement("option");
+				t.value = e, t.textContent = e, n.append(t);
+			}), n.value = e.meridiem, n.onchange = () => {
+				e.meridiem = n.value, t.change();
+			}, i.append(n);
+		}
+		r.append(i);
 	}
-	if (e.hourFormat === 12) {
-		let n = document.createElement("select");
-		["AM", "PM"].forEach((e) => {
-			let t = document.createElement("option");
-			t.value = e, t.textContent = e, n.append(t);
-		}), n.value = e.meridiem, n.onchange = () => {
-			e.meridiem = n.value, t.change();
-		}, i.append(n);
-	}
-	r.append(i);
-	let l = document.createElement("div");
-	if (l.className = "pdp-time-messages", e.minTime || e.maxTime) {
+	let o = document.createElement("div");
+	if (o.className = "pdp-time-messages", e.minTime || e.maxTime) {
 		let t = document.createElement("div");
-		t.className = e.classes.textInfo, e.minTime && e.maxTime ? t.textContent = `محدوده مجاز: ${A(e.minTime)} تا ${A(e.maxTime)}` : e.minTime ? t.textContent = `حداقل زمان مجاز: ${A(e.minTime)}` : t.textContent = `حداکثر زمان مجاز: ${A(e.maxTime)}`, l.append(t);
+		t.className = e.classes.textInfo, e.minTime && e.maxTime ? t.textContent = `محدوده مجاز: ${A(e.minTime)} تا ${A(e.maxTime)}` : e.minTime ? t.textContent = `حداقل زمان مجاز: ${A(e.minTime)}` : t.textContent = `حداکثر زمان مجاز: ${A(e.maxTime)}`, o.append(t);
 	}
-	let u = document.createElement("div");
-	if (u.className = "pdp-time-messages", (e.multiple ?? 0) > 1) {
+	let s = document.createElement("div");
+	if (s.className = "pdp-time-messages", (e.multiple ?? 0) > 1) {
 		let t = document.createElement("div");
-		t.className = e.classes.textCountSelect, t.textContent = `تعداد مجاز انتخاب: ${e.multiple ?? 1}`, u.append(t);
+		t.className = e.classes.textCountSelect, t.textContent = `تعداد مجاز انتخاب: ${e.multiple ?? 1}`, s.append(t);
 	}
 	if (e.timeError) {
 		let t = document.createElement("div");
-		t.className = e.classes.textError, t.textContent = e.timeError, l.append(t);
+		t.className = e.classes.textError, t.textContent = e.timeError, o.append(t);
 	}
-	return r.append(l), r.append(u), r;
+	return r.append(o), r.append(s), r;
 }
 //#endregion
 //#region src/core/StateFactory.js
@@ -565,24 +544,15 @@ function M(e, t) {
 	}), e.footer && typeof e.footer == "object" && !Array.isArray(e.footer) && (n.footer = {
 		...n.footer,
 		...e.footer ?? {}
-	}), n.isRange = typeof e.range == "boolean" ? e.range : n.isRange, n.multiple = typeof e.multiple == "number" ? e.multiple : n.multiple, n.minDate = N(e.minDate, t), n.maxDate = N(e.maxDate, t), typeof e.disabledDates == "function" ? n.disabledDates = e.disabledDates : Array.isArray(e.disabledDates) ? n.disabledDates = Array.isArray(e.disabledDates) ? e.disabledDates.filter((e) => typeof e == "string").map((e) => t.parseDate(e)).filter((e) => e && Number.isInteger(e.year) && Number.isInteger(e.month) && Number.isInteger(e.day)) : [] : n.disabledDates = [], n.selectedDate = N(e.defaultDate, t), n.selectedDate && (n.currentYear = n.selectedDate.year, n.currentMonth = n.selectedDate.month), n.dayClassName = typeof e.dayClassName == "function" ? e.dayClassName : null, n.showTime = typeof e.time == "boolean" ? e.time : !1, n.hourFormat = typeof e.hourFormat == "number" ? e.hourFormat : 24, n.showSeconds = typeof e.showSeconds == "boolean" ? e.showSeconds : !0, n.minuteStep = typeof e.minuteStep == "number" ? e.minuteStep : 1, n.hourStep = typeof e.hourStep == "number" ? e.hourStep : 1, n.secondStep = typeof e.secondStep == "number" ? e.secondStep : 1, n.minTime = P(e.minTime), n.maxTime = P(e.maxTime), e.events && typeof e.events == "object" && !Array.isArray(e.events) && (n.events = {}, Object.entries(e.events).forEach(([e, r]) => {
-		let i = t.parseDate(e);
+	}), n.isRange = typeof e.range == "boolean" ? e.range : n.isRange, n.multiple = typeof e.multiple == "number" ? e.multiple : n.multiple, n.minDate = N(e.minDate, t), n.maxDate = N(e.maxDate, t), typeof e.disabledDates == "function" ? n.disabledDates = e.disabledDates : Array.isArray(e.disabledDates) ? n.disabledDates = Array.isArray(e.disabledDates) ? e.disabledDates.filter((e) => typeof e == "string").map((e) => t.parseInputDate(e)).filter((e) => e && Number.isInteger(e.year) && Number.isInteger(e.month) && Number.isInteger(e.day)) : [] : n.disabledDates = [], n.selectedDate = N(e.defaultDate, t), n.selectedDate && (n.currentYear = n.selectedDate.year, n.currentMonth = n.selectedDate.month, n.hour = n.selectedDate.hour, n.minute = n.selectedDate.minute, n.second = n.selectedDate.second), n.dayClassName = typeof e.dayClassName == "function" ? e.dayClassName : null, n.showTime = typeof e.time == "boolean" ? e.time : !1, n.hourFormat = typeof e.hourFormat == "number" ? e.hourFormat : 24, n.showSeconds = typeof e.showSeconds == "boolean" ? e.showSeconds : !0, n.minuteStep = typeof e.minuteStep == "number" ? e.minuteStep : 1, n.hourStep = typeof e.hourStep == "number" ? e.hourStep : 1, n.secondStep = typeof e.secondStep == "number" ? e.secondStep : 1, n.minTime = P(e.minTime), n.maxTime = P(e.maxTime), e.events && typeof e.events == "object" && !Array.isArray(e.events) && (n.events = {}, Object.entries(e.events).forEach(([e, r]) => {
+		let i = t.parseInputDate(e);
 		if (!i) return;
 		let a = `${i.year}-${String(i.month + 1).padStart(2, "0")}-${String(i.day).padStart(2, "0")}`;
 		n.events[a] = r;
 	})), n.showTime && (n.isRange || (n.multiple ?? 0) > 0) && (console.warn("[PersianDatePicker] 'time' cannot be used with 'range' or 'multiple'. Time has been disabled."), n.showTime = !1), n;
 }
 function N(e, t) {
-	if (typeof e != "string") return null;
-	let [n, r, i] = e.split(/[\/-]/).map(Number);
-	return !Number.isInteger(n) || !Number.isInteger(r) || !Number.isInteger(i) ? (console.warn(`[PersianDatePicker] Invalid date "${e}".`), null) : {
-		year: n,
-		month: r - 1,
-		day: i,
-		hour: 0,
-		minute: 0,
-		second: 0
-	};
+	return typeof e == "string" ? t.parseInputDate(e) || (console.warn(`[PersianDatePicker] Invalid date "${e}".`), null) : null;
 }
 function P(e) {
 	if (typeof e != "string") return null;
@@ -609,21 +579,14 @@ function F(e = {}, t = {}) {
 		"maxDate",
 		"defaultDate"
 	].forEach((t) => {
-		e[t] !== void 0 && typeof e[t] != "string" && (console.warn(`[PersianDatePicker] '${t}' must be a string.`), e[t] = null), e[t] !== void 0 && (n(e[t]) || (console.warn(`[PersianDatePicker] '${t}' invalid format. Use YYYY/MM/DD`), e[t] = null));
+		e[t] !== void 0 && typeof e[t] != "string" && (console.warn(`[PersianDatePicker] '${t}' must be a string.`), e[t] = null);
 	}), e.disabledDates !== void 0 && !Array.isArray(e.disabledDates) && typeof e.disabledDates != "function" && (console.warn("[PersianDatePicker] 'disabledDates' must be an array or function."), e.disabledDates = []), e.events !== void 0 && (typeof e.events != "object" || Array.isArray(e.events)) && (console.warn("[PersianDatePicker] 'events' must be an object."), e.events = {}), e;
-	function n(e) {
-		if (typeof e != "string") return !1;
-		let t = e.match(/^(\d{4})\/(\d{2})\/(\d{2})$/);
-		if (!t) return !1;
-		let [n, r, i, a] = t.map(Number);
-		return !(i < 1 || i > 12 || a < 1 || a > 31);
-	}
 }
 //#endregion
 //#region src/index.js
 var I = class {
 	constructor(e = {}) {
-		if (this.options = e, this.formatter = new O(this.options.format ?? "YYYY/MM/DD"), this.options = F(e, this.state), this.state = M(this.options, this.formatter), this.options.time) {
+		if (this.options = e, this.formatter = new O(this.options.format ?? (this.options.time ? "H:i:s YYYY/MM/DD" : "YYYY/MM/DD")), this.options = F(e), this.state = M(this.options, this.formatter), this.options.time) {
 			let e = /(HH|H|hh|h)/.test(this.formatter.format), t = /(mm|m)/.test(this.formatter.format), n = /(ss|s)/.test(this.formatter.format), r = /(A|a)/.test(this.formatter.format);
 			(!e || !t) && (this.formatter.format += " HH:mm"), this.state.showSeconds && !n && (this.formatter.format += ":ss"), this.state.hourFormat === 12 && !r && (this.formatter.format += " A");
 		}
@@ -640,7 +603,7 @@ var I = class {
 		let t = this.calendar.today();
 		this.state.today = t;
 		let n = this.calendar.getIranTime();
-		this.state.hour = n.hour, this.state.minute = n.minute, this.state.second = n.second, this.state.selectedDate || (this.state.currentYear = t.year, this.state.currentMonth = t.month), this.container = document.createElement("div"), this.container.className = "pdp";
+		this.state.selectedDate || (this.state.hour = n.hour, this.state.minute = n.minute, this.state.second = n.second), this.state.selectedDate || (this.state.currentYear = t.year, this.state.currentMonth = t.month), this.container = document.createElement("div"), this.container.className = "pdp";
 		let r = this.input.getAttribute("theme") || "light";
 		this.container.classList.add(`pdp-${r}`), document.body.appendChild(this.container), this.state.selectedDate && (this.input.value = this.formatter.formatDate(this.state.selectedDate, this.state)), this.renderer = new w(this.container), this.render();
 	}
@@ -771,15 +734,24 @@ var I = class {
 	}
 	setDate(e) {
 		if (!this.state.isRange) {
-			let t = this.formatter.parseDate(e);
-			this.state.selectedDate = t, this.state.currentYear = t.year, this.state.currentMonth = t.month, this.input.value = this.formatter.formatDate(t, this.state), this.render();
+			let t = this.formatter.parseInputDate(e);
+			if (!t) {
+				console.warn("[PersianDatePicker] Invalid date.");
+				return;
+			}
+			this.state.selectedDate = t, this.state.currentYear = t.year, this.state.currentMonth = t.month, this.state.hour = t.hour, this.state.minute = t.minute, this.state.second = t.second, this.input.value = this.formatter.formatDate(t, this.state), this.render();
 			return;
 		}
 		if (!e.start || !e.end) {
 			console.log("لطفاً تاریخ دوم را نیز وارد کنید.");
 			return;
 		}
-		this.state.rangeStart = this.formatter.parseDate(e.start), this.state.rangeEnd = this.formatter.parseDate(e.end), this.input.value = this.formatter.formatDate(this.state.rangeStart, this.state) + " - " + this.formatter.formatDate(this.state.rangeEnd, this.state), this.render();
+		let t = this.formatter.parseInputDate(e.start), n = this.formatter.parseInputDate(e.end);
+		if (!t || !n) {
+			console.warn("[PersianDatePicker] Invalid range.");
+			return;
+		}
+		this.state.rangeStart = t, this.state.rangeEnd = n, this.input.value = this.formatter.formatDate(this.state.rangeStart, this.state) + " - " + this.formatter.formatDate(this.state.rangeEnd, this.state), this.render();
 	}
 	destroy() {
 		this.input.removeEventListener("click", this.onInputClick), document.removeEventListener("click", this.onDocumentClick), document.removeEventListener("pdp:theme", this.onThemeChange), this.container.remove();
