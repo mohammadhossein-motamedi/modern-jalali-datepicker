@@ -1,6 +1,6 @@
 {
   "name": "modern-jalali-datepicker",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Modern Jalali (Persian) Date Picker with range selection, multiple dates, time picker and customizable themes.",
   "type": "module",
   "main": "./dist/modern-jalali-datepicker.umd.cjs",
