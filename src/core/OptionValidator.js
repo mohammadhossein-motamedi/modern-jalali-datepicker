@@ -70,22 +70,10 @@ export default function validateOptions(options = {} , state = {}) {
     // minDate , maxDate , defaultDate
     ["minDate", "maxDate", "defaultDate"].forEach(key => {
 
-        if (options[key] !== undefined && typeof options[key] !== "string") 
-        {
-            console.warn(`[PersianDatePicker] '${key}' must be a string.` );
+        if (options[key] !== undefined && typeof options[key] !== "string") {
+            console.warn(`[PersianDatePicker] '${key}' must be a string.`);
             options[key] = null;
         }
-
-        if (options[key] !== undefined) 
-        {
-            if (!isValidJalaliDate(options[key])) {
-                console.warn(
-                    `[PersianDatePicker] '${key}' invalid format. Use YYYY/MM/DD`
-                );
-                options[key] = null;
-            }
-        }
-            
 
     });
 
@@ -112,18 +100,5 @@ export default function validateOptions(options = {} , state = {}) {
 
 
 
-    function isValidJalaliDate(value) 
-    {
-        if (typeof value !== "string") return false;
-
-        const match = value.match(/^(\d{4})\/(\d{2})\/(\d{2})$/);
-        if (!match) return false;
-
-        const [_, y, m, d] = match.map(Number);
-
-        if (m < 1 || m > 12) return false;
-        if (d < 1 || d > 31) return false;
-
-        return true;
-    }
+   
 }

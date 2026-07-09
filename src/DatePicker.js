@@ -26,10 +26,10 @@ export default class DatePicker
 
 
         this.formatter = new Formatter(
-            this.options.format ?? "YYYY/MM/DD"
+            this.options.format ?? ( this.options.time ? 'H:i:s YYYY/MM/DD'  : "YYYY/MM/DD")
         );
          // وضعیت
-       this.options = validateOptions(options ,this.state);
+       this.options = validateOptions(options );
         this.state = createState(
                     this.options,
                     this.formatter
@@ -126,9 +126,11 @@ export default class DatePicker
 
         const iranTime = this.calendar.getIranTime();
 
-        this.state.hour = iranTime.hour;
-        this.state.minute = iranTime.minute;
-        this.state.second = iranTime.second;
+        if (!this.state.selectedDate) {
+            this.state.hour = iranTime.hour;
+            this.state.minute = iranTime.minute;
+            this.state.second = iranTime.second;
+        }
 
         if (!this.state.selectedDate) 
         {
@@ -561,11 +563,22 @@ export default class DatePicker
     {
         if (!this.state.isRange) 
         {
-            const date = this.formatter.parseDate(value);
+            const date = this.formatter.parseInputDate(value);
+               
+            if (!date) {
+                console.warn("[PersianDatePicker] Invalid date.");
+                return;
+            }
 
             this.state.selectedDate = date;
             this.state.currentYear = date.year;
             this.state.currentMonth = date.month;
+            this.state.hour = date.hour;
+            this.state.minute = date.minute;
+            this.state.second = date.second;
+           
+            
+            
             this.input.value = this.formatter.formatDate(date,this.state);
            
             
@@ -579,9 +592,16 @@ export default class DatePicker
             console.log("لطفاً تاریخ دوم را نیز وارد کنید.");
             return;
         }
+        const start = this.formatter.parseInputDate(value.start);
+        const end = this.formatter.parseInputDate(value.end);
 
-        this.state.rangeStart = this.formatter.parseDate(value.start);
-        this.state.rangeEnd = this.formatter.parseDate(value.end);
+        if (!start || !end) {
+            console.warn("[PersianDatePicker] Invalid range.");
+            return;
+        }
+
+        this.state.rangeStart = start;
+        this.state.rangeEnd = end;
 
         this.input.value =
             this.formatter.formatDate(this.state.rangeStart , this.state) +

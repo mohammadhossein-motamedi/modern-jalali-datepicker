@@ -174,85 +174,88 @@ export default function TimeView(state, events, options) {
 
     }
 
-    
-    // make hour
-    const hour =  createSpinner(
-        state.hour,
-        state.hourFormat === 24 ? 0 : 1,
-        state.hourFormat === 24 ? 23 : 12,
-        options.hourStep ?? 1,
-        value => state.hour = value
-    );
-
-    // make minute
-    const minute = createSpinner(
-        state.minute,
-        0,
-        59,
-        options.minuteStep?? 1,
-        value => state.minute = value
-    );
-
-    container.append(hour);
-
-    const colon1 = document.createElement("span");
-    colon1.textContent = ":";
-    container.append(colon1);
-
-    container.append(minute);
    
-    
-    // make second
-    if (state.showSeconds) {
-
-        const colon2 = document.createElement("span");
-        colon2.textContent = ":";
-
-        container.append(colon2);
-
-        const second = createSpinner(
-            state.second,
-            0,
-            59,
-            options.secondStep??1,
-            value => state.second = value
+    if(state.showTime)
+    {
+        // make hour
+        const hour =  createSpinner(
+            state.hour,
+            state.hourFormat === 24 ? 0 : 1,
+            state.hourFormat === 24 ? 23 : 12,
+            options.hourStep ?? 1,
+            value => state.hour = value
         );
 
-        container.append(second);
+        // make minute
+        const minute = createSpinner(
+            state.minute,
+            0,
+            59,
+            options.minuteStep?? 1,
+            value => state.minute = value
+        );
 
+        container.append(hour);
+
+        const colon1 = document.createElement("span");
+        colon1.textContent = ":";
+        container.append(colon1);
+
+        container.append(minute);
+    
+        
+        // make second
+        if (state.showSeconds) {
+
+            const colon2 = document.createElement("span");
+            colon2.textContent = ":";
+
+            container.append(colon2);
+
+            const second = createSpinner(
+                state.second,
+                0,
+                59,
+                options.secondStep??1,
+                value => state.second = value
+            );
+
+            container.append(second);
+
+        }
+
+        if (state.hourFormat === 12) {
+
+            const meridiem = document.createElement("select");
+
+            ["AM", "PM"].forEach(item => {
+
+                const option = document.createElement("option");
+
+                option.value = item;
+                option.textContent = item;
+
+                meridiem.append(option);
+
+            });
+
+            meridiem.value = state.meridiem;
+
+            meridiem.onchange = () => {
+
+
+                state.meridiem = meridiem.value;
+        
+                events.change();
+
+            };
+
+            container.append(meridiem);
+
+        }
+
+        wrapper.append(container);
     }
-
-    if (state.hourFormat === 12) {
-
-        const meridiem = document.createElement("select");
-
-        ["AM", "PM"].forEach(item => {
-
-            const option = document.createElement("option");
-
-            option.value = item;
-            option.textContent = item;
-
-            meridiem.append(option);
-
-        });
-
-        meridiem.value = state.meridiem;
-
-        meridiem.onchange = () => {
-
-
-            state.meridiem = meridiem.value;
-       
-            events.change();
-
-        };
-
-        container.append(meridiem);
-
-    }
-
-   wrapper.append(container);
 
     const messages = document.createElement("div");
     messages.className = "pdp-time-messages";

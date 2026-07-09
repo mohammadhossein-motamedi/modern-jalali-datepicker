@@ -81,83 +81,6 @@ export default class Formatter {
         
     }
 
-    parseDate(value) 
-    {
-         if (typeof value !== "string") return null;
-
-    const tokenPatterns = {
-        YYYY: "(\\d{4})",
-        YY: "(\\d{2})",
-        MM: "(\\d{2})",
-        M: "(\\d{1,2})",
-        DD: "(\\d{2})",
-        D: "(\\d{1,2})",
-        HH: "(\\d{2})",
-        H: "(\\d{1,2})",
-        hh: "(\\d{2})",
-        h: "(\\d{1,2})",
-        mm: "(\\d{2})",
-        m: "(\\d{1,2})",
-        ss: "(\\d{2})",
-        s: "(\\d{1,2})",
-        A: "(AM|PM)",
-        a: "(am|pm)"
-    };
-
-    const tokens = [];
-
-    const regexString = "^" + this.format.replace(
-        /YYYY|YY|MM|M|DD|D|HH|H|hh|h|mm|m|ss|s|A|a/g,
-        token => {
-            tokens.push(token);
-            return tokenPatterns[token];
-        }
-    ) + "$";
-
- const match = value.match(new RegExp(regexString));
-
-    if (!match) return null;
-
-    const result = {};
-
-    tokens.forEach((token, index) => {
-        result[token] = match[index + 1];
-    });
-
-    let hour = Number(
-        result.HH ??
-        result.H ??
-        result.hh ??
-        result.h ??
-        0
-    );
-
-    const meridiem = result.A ?? result.a;
-
-    if (meridiem?.toUpperCase() === "PM" && hour < 12) hour += 12;
-    if (meridiem?.toUpperCase() === "AM" && hour === 12) hour = 0;
-
-    const date = {
-        year: Number(result.YYYY ?? ("20" + result.YY)),
-        month: Number(result.MM ?? result.M) - 1,
-        day: Number(result.DD ?? result.D),
-        hour,
-        minute: Number(result.mm ?? result.m ?? 0),
-        second: Number(result.ss ?? result.s ?? 0)
-    };
-
-    return this.isValidDate(date) ? date : null;
-    }
-
-   getTokens() 
-   {
-        return this.format.match(
-            /YYYY|YY|MM|M|DD|D|HH|H|hh|h|mm|m|ss|s|A|a/g
-        );
-    }
-
-
-
     isValidDate(date) 
     {
 
@@ -193,5 +116,44 @@ export default class Formatter {
         ];
 
         return tokens.every(token => valid.includes(token));
+    }
+
+
+   parseInputDate(value)
+    {
+        if (typeof value !== "string") return null;
+
+        value = value.trim();
+
+        let hour = 0;
+        let minute = 0;
+        let second = 0;
+
+        //extraction time
+        const timeMatch = value.match(/(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?/);
+
+        if (timeMatch) {
+            hour = Number(timeMatch[1]);
+            minute = Number(timeMatch[2]);
+            second = Number(timeMatch[3] ?? 0);
+
+            value = value.replace(timeMatch[0], "").trim();
+        }
+
+        //extraction date
+        const dateMatch = value.match(/^(\d{4})[\/.-](\d{1,2})[\/.-](\d{1,2})$/);
+
+        if (!dateMatch) return null;
+
+        const date = {
+            year: Number(dateMatch[1]),
+            month: Number(dateMatch[2]) - 1,
+            day: Number(dateMatch[3]),
+            hour,
+            minute,
+            second
+        };
+
+        return this.isValidDate(date) ? date : null;
     }
 }

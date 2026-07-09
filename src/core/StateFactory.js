@@ -43,7 +43,7 @@ export default function createState(options, formatter)
         state.disabledDates = Array.isArray(options.disabledDates)? 
             options.disabledDates
             .filter(v => typeof v === "string")
-            .map(v => formatter.parseDate(v))
+            .map(v => formatter.parseInputDate(v))
             .filter(d =>
                 d &&
                 Number.isInteger(d.year) &&
@@ -65,8 +65,11 @@ export default function createState(options, formatter)
     {
 
         state.currentYear = state.selectedDate.year;
-
         state.currentMonth = state.selectedDate.month;
+
+        state.hour = state.selectedDate.hour;
+        state.minute = state.selectedDate.minute;
+        state.second = state.selectedDate.second;
 
     }
 
@@ -98,7 +101,7 @@ export default function createState(options, formatter)
         state.events = {};
 
         Object.entries(options.events).forEach(([key, value]) => {
-            const date = formatter.parseDate(key);
+            const date = formatter.parseInputDate(key);
 
             if (!date) return;
 
@@ -129,31 +132,18 @@ export default function createState(options, formatter)
 }
 
 
-function parseOptionDate(value, formatter) 
+function parseOptionDate(value, formatter)
 {
+    if (typeof value !== "string") return null;
 
-    if (typeof value !== "string")  return null;
-    
+    const date = formatter.parseInputDate(value);
 
-   const [year, month, day] = value.split(/[\/-]/).map(Number);
-
-    if (
-        !Number.isInteger(year) ||
-        !Number.isInteger(month) ||
-        !Number.isInteger(day)
-    ) {
+    if (!date) {
         console.warn(`[PersianDatePicker] Invalid date "${value}".`);
         return null;
     }
 
-    return {
-        year,
-        month: month - 1,
-        day,
-        hour: 0,
-        minute: 0,
-        second: 0
-    };
+    return date;
 }
 
 
