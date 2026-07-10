@@ -26,7 +26,7 @@ export default class DatePicker
 
 
         this.formatter = new Formatter(
-            this.options.format ?? ( this.options.time ? 'H:i:s YYYY/MM/DD'  : "YYYY/MM/DD")
+            this.options.format ?? ( this.options.time ? 'HH:mm:ss YYYY/MM/DD'  : "YYYY/MM/DD")
         );
          // وضعیت
        this.options = validateOptions(options );
@@ -731,6 +731,7 @@ export default class DatePicker
                 : "");
 
         this.input.value = value;
+        this.triggerSelect();
         this.render();
 
     }

@@ -586,7 +586,7 @@ function F(e = {}, t = {}) {
 //#region src/index.js
 var I = class {
 	constructor(e = {}) {
-		if (this.options = e, this.formatter = new O(this.options.format ?? (this.options.time ? "H:i:s YYYY/MM/DD" : "YYYY/MM/DD")), this.options = F(e), this.state = M(this.options, this.formatter), this.options.time) {
+		if (this.options = e, this.formatter = new O(this.options.format ?? (this.options.time ? "HH:mm:ss YYYY/MM/DD" : "YYYY/MM/DD")), this.options = F(e), this.state = M(this.options, this.formatter), this.options.time) {
 			let e = /(HH|H|hh|h)/.test(this.formatter.format), t = /(mm|m)/.test(this.formatter.format), n = /(ss|s)/.test(this.formatter.format), r = /(A|a)/.test(this.formatter.format);
 			(!e || !t) && (this.formatter.format += " HH:mm"), this.state.showSeconds && !n && (this.formatter.format += ":ss"), this.state.hourFormat === 12 && !r && (this.formatter.format += " A");
 		}
@@ -773,7 +773,7 @@ var I = class {
 			return;
 		}
 		let e = this.state.isRange ? this.state.rangeStart ? this.formatter.formatDate(this.state.rangeStart, this.state) + (this.state.rangeEnd ? " - " + this.formatter.formatDate(this.state.rangeEnd, this.state) : "") : "" : this.state.selectedDate ? this.formatter.formatDate(this.state.selectedDate, this.state) : "";
-		this.input.value = e, this.render();
+		this.input.value = e, this.triggerSelect(), this.render();
 	}
 	parseTime(e) {
 		let t = e.split(":");
