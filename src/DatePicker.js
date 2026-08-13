@@ -522,6 +522,7 @@ export default class DatePicker
         this.state.rangeStart = null;
         this.state.rangeEnd = null;
         this.input.value = "";
+        this.triggerSelect();
         this.render();
 
     }
