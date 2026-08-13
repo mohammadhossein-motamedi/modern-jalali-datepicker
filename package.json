@@ -35,7 +35,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mohammadhossein-motamedi/modern-jalali-datepicker.git"
+    "url": "git+https://github.com/mohammadhossein-motamedi/modern-jalali-datepicker.git"
   },
   "homepage": "https://github.com/mohammadhossein-motamedi/modern-jalali-datepicker",
   "bugs": {
