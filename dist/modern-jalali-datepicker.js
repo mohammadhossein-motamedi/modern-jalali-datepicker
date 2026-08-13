@@ -724,7 +724,7 @@ var I = class {
 		this.state.currentYear = e.year, this.state.currentMonth = e.month, this.selectDate(e);
 	}
 	clear() {
-		this.state.selectedDate = null, this.state.rangeStart = null, this.state.rangeEnd = null, this.input.value = "", this.render();
+		this.state.selectedDate = null, this.state.rangeStart = null, this.state.rangeEnd = null, this.input.value = "", this.triggerSelect(), this.render();
 	}
 	getDate() {
 		return this.state.isRange ? {
